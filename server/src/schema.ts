@@ -1,68 +1,35 @@
 import { z } from 'zod';
 
-// Article/Item schema for the homepage content
-export const itemSchema = z.object({
+// Article schema
+export const articleSchema = z.object({
   id: z.number(),
   title: z.string(),
-  description: z.string(), // Short description or snippet
-  imageUrl: z.string().url(), // URL to thumbnail or main image
-  category: z.string().nullable(), // Optional category
-  created_at: z.coerce.date(), // Automatically converts string timestamps to Date objects
-  updated_at: z.coerce.date()
+  content: z.string(),
+  author: z.string(),
+  publish_time: z.coerce.date(),
+  comment_count: z.number().int().nonnegative(),
+  created_at: z.coerce.date()
 });
 
-export type Item = z.infer<typeof itemSchema>;
+export type Article = z.infer<typeof articleSchema>;
 
-// Input schema for creating items
-export const createItemInputSchema = z.object({
-  title: z.string().min(1, 'Title is required').max(200, 'Title too long'),
-  description: z.string().min(1, 'Description is required').max(500, 'Description too long'),
-  imageUrl: z.string().url('Must be a valid URL'),
-  category: z.string().nullable() // Explicit null allowed, undefined not allowed
+// Input schema for creating articles
+export const createArticleInputSchema = z.object({
+  title: z.string(),
+  content: z.string(),
+  author: z.string(),
+  publish_time: z.coerce.date()
 });
 
-export type CreateItemInput = z.infer<typeof createItemInputSchema>;
+export type CreateArticleInput = z.infer<typeof createArticleInputSchema>;
 
-// Input schema for updating items
-export const updateItemInputSchema = z.object({
+// Input schema for updating articles
+export const updateArticleInputSchema = z.object({
   id: z.number(),
-  title: z.string().min(1).max(200).optional(),
-  description: z.string().min(1).max(500).optional(),
-  imageUrl: z.string().url().optional(),
-  category: z.string().nullable().optional() // Can be null or undefined
+  title: z.string().optional(),
+  content: z.string().optional(),
+  author: z.string().optional(),
+  publish_time: z.coerce.date().optional()
 });
 
-export type UpdateItemInput = z.infer<typeof updateItemInputSchema>;
-
-// Input schema for getting items with pagination and filtering
-export const getItemsInputSchema = z.object({
-  limit: z.number().int().min(1).max(100).optional().default(20),
-  offset: z.number().int().min(0).optional().default(0),
-  category: z.string().nullable().optional(), // Filter by category
-  search: z.string().optional() // Search in title and description
-});
-
-export type GetItemsInput = z.infer<typeof getItemsInputSchema>;
-
-// Input schema for getting a single item by ID
-export const getItemInputSchema = z.object({
-  id: z.number()
-});
-
-export type GetItemInput = z.infer<typeof getItemInputSchema>;
-
-// Input schema for deleting an item
-export const deleteItemInputSchema = z.object({
-  id: z.number()
-});
-
-export type DeleteItemInput = z.infer<typeof deleteItemInputSchema>;
-
-// Response schema for paginated items
-export const itemsResponseSchema = z.object({
-  items: z.array(itemSchema),
-  total: z.number(),
-  hasMore: z.boolean()
-});
-
-export type ItemsResponse = z.infer<typeof itemsResponseSchema>;
+export type UpdateArticleInput = z.infer<typeof updateArticleInputSchema>;

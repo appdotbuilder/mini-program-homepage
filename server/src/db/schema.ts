@@ -1,18 +1,18 @@
-import { serial, text, pgTable, timestamp, varchar } from 'drizzle-orm/pg-core';
+import { serial, text, pgTable, timestamp, integer } from 'drizzle-orm/pg-core';
 
-export const itemsTable = pgTable('items', {
+export const articlesTable = pgTable('articles', {
   id: serial('id').primaryKey(),
-  title: varchar('title', { length: 200 }).notNull(),
-  description: text('description').notNull(), // Short description or snippet
-  imageUrl: text('image_url').notNull(), // URL to thumbnail or main image
-  category: varchar('category', { length: 100 }), // Nullable by default, matches Zod schema
+  title: text('title').notNull(),
+  content: text('content').notNull(),
+  author: text('author').notNull(),
+  publish_time: timestamp('publish_time').notNull(),
+  comment_count: integer('comment_count').notNull().default(0),
   created_at: timestamp('created_at').defaultNow().notNull(),
-  updated_at: timestamp('updated_at').defaultNow().notNull(),
 });
 
-// TypeScript type for the table schema
-export type Item = typeof itemsTable.$inferSelect; // For SELECT operations
-export type NewItem = typeof itemsTable.$inferInsert; // For INSERT operations
+// TypeScript types for the table schema
+export type Article = typeof articlesTable.$inferSelect; // For SELECT operations
+export type NewArticle = typeof articlesTable.$inferInsert; // For INSERT operations
 
 // Important: Export all tables and relations for proper query building
-export const tables = { items: itemsTable };
+export const tables = { articles: articlesTable };
